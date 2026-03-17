@@ -37,7 +37,7 @@ actor OpenRouterClient {
                     urlRequest.httpMethod = "POST"
                     urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
                     urlRequest.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
-                    urlRequest.setValue("OnTheSpot/2.0", forHTTPHeaderField: "HTTP-Referer")
+                    urlRequest.setValue("OpenGranola/2.0", forHTTPHeaderField: "HTTP-Referer")
                     urlRequest.httpBody = try JSONEncoder().encode(request)
 
                     let (bytes, response) = try await URLSession.shared.bytes(for: urlRequest)
@@ -91,7 +91,7 @@ actor OpenRouterClient {
         urlRequest.httpMethod = "POST"
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         urlRequest.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
-        urlRequest.setValue("OnTheSpot/2.0", forHTTPHeaderField: "HTTP-Referer")
+        urlRequest.setValue("OpenGranola/2.0", forHTTPHeaderField: "HTTP-Referer")
         urlRequest.httpBody = try JSONEncoder().encode(request)
 
         let (data, response) = try await URLSession.shared.data(for: urlRequest)

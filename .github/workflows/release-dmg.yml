@@ -76,12 +76,12 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: OnTheSpot-dmg
-          path: dist/OnTheSpot.dmg
+          name: OpenGranola-dmg
+          path: dist/OpenGranola.dmg
 
       - name: Attach DMG to Release
         if: github.event_name == 'release'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release upload ${{ github.event.release.tag_name }} dist/OnTheSpot.dmg --clobber
+          gh release upload ${{ github.event.release.tag_name }} dist/OpenGranola.dmg --clobber

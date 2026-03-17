@@ -4,10 +4,10 @@ import FluidAudio
 import Observation
 import os
 
-/// Simple file logger for diagnostics — writes to /tmp/onthespot.log
+/// Simple file logger for diagnostics — writes to /tmp/opengranola.log
 func diagLog(_ msg: String) {
     let line = "\(Date()): \(msg)\n"
-    let path = "/tmp/onthespot.log"
+    let path = "/tmp/opengranola.log"
     if let fh = FileHandle(forWritingAtPath: path) {
         fh.seekToEndOfFile()
         fh.write(line.data(using: .utf8)!)

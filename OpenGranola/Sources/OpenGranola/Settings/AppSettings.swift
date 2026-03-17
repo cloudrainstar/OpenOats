@@ -78,7 +78,7 @@ final class AppSettings {
 // MARK: - Keychain Helper
 
 enum KeychainHelper {
-    private static let service = "com.onthespot.app"
+    private static let service = "com.opengranola.app"
 
     static func save(key: String, value: String) {
         guard let data = value.data(using: .utf8) else { return }

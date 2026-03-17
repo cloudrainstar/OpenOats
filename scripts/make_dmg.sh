@@ -2,8 +2,8 @@
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
-APP_PATH="dist/On The Spot.app"
-DMG_PATH="dist/OnTheSpot.dmg"
+APP_PATH="dist/OpenGranola.app"
+DMG_PATH="dist/OpenGranola.dmg"
 
 if [[ ! -d "$APP_PATH" ]]; then
   echo "App not found at $APP_PATH"
@@ -12,7 +12,7 @@ if [[ ! -d "$APP_PATH" ]]; then
 fi
 
 rm -f "$DMG_PATH"
-hdiutil create -volname "On The Spot" -srcfolder "$APP_PATH" -ov -format UDZO "$DMG_PATH"
+hdiutil create -volname "OpenGranola" -srcfolder "$APP_PATH" -ov -format UDZO "$DMG_PATH"
 
 # Sign the DMG if a signing identity is available
 if [[ -z "${CODESIGN_IDENTITY:-}" ]]; then

@@ -9,7 +9,7 @@ actor SessionStore {
 
     init() {
         let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        sessionsDirectory = appSupport.appendingPathComponent("On The Spot/sessions", isDirectory: true)
+        sessionsDirectory = appSupport.appendingPathComponent("OpenGranola/sessions", isDirectory: true)
 
         try? FileManager.default.createDirectory(at: sessionsDirectory, withIntermediateDirectories: true)
 

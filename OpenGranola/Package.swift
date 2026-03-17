@@ -3,19 +3,19 @@
 import PackageDescription
 
 let package = Package(
-    name: "OnTheSpot",
+    name: "OpenGranola",
     platforms: [.macOS(.v26)],
     dependencies: [
         .package(url: "https://github.com/FluidInference/FluidAudio.git", from: "0.7.9"),
     ],
     targets: [
         .executableTarget(
-            name: "OnTheSpot",
+            name: "OpenGranola",
             dependencies: [
                 .product(name: "FluidAudio", package: "FluidAudio"),
             ],
-            path: "Sources/OnTheSpot",
-            exclude: ["Info.plist", "OnTheSpot.entitlements", "Assets"]
+            path: "Sources/OpenGranola",
+            exclude: ["Info.plist", "OpenGranola.entitlements", "Assets"]
         ),
     ]
 )

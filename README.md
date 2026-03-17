@@ -1,6 +1,6 @@
-# On The Spot
+# OpenGranola
 
-On The Spot is a macOS meeting copilot for live conversations. It listens to your mic and the other side of the call, transcribes both streams in real time, searches your notes, and surfaces grounded talking points while the conversation is happening.
+OpenGranola is a macOS meeting copilot for live conversations. It listens to your mic and the other side of the call, transcribes both streams in real time, searches your notes, and surfaces grounded talking points while the conversation is happening.
 
 ## What It Does
 
@@ -15,7 +15,7 @@ On The Spot is a macOS meeting copilot for live conversations. It listens to you
 
 ## How It Works
 
-On The Spot is local-first, but not fully offline:
+OpenGranola is local-first, but not fully offline:
 
 - Transcription runs locally on your Mac
 - Knowledge-base chunks are sent to Voyage AI for embeddings and reranking
@@ -38,7 +38,7 @@ On The Spot is local-first, but not fully offline:
    ./scripts/build_swift_app.sh
    ```
 
-2. Launch `/Applications/On The Spot.app`.
+2. Launch `/Applications/OpenGranola.app`.
 
 3. Grant permissions when macOS prompts for them:
    - Microphone access
@@ -65,10 +65,10 @@ The first live run downloads the local ASR model, which is roughly 600 MB.
 This script:
 
 - builds the Swift package in release mode
-- creates `dist/On The Spot.app`
+- creates `dist/OpenGranola.app`
 - signs the app if a signing identity is available
 - optionally notarizes it if Apple credentials are present
-- installs the app to `/Applications/On The Spot.app`
+- installs the app to `/Applications/OpenGranola.app`
 
 Optional environment variables for signing and notarization:
 
@@ -80,7 +80,7 @@ Optional environment variables for signing and notarization:
 For a package-only build during development:
 
 ```bash
-cd OnTheSpot
+cd OpenGranola
 swift build -c debug
 ```
 
@@ -97,14 +97,14 @@ swift build -c debug
 - Point the app at a folder containing `.md` or `.txt` files
 - Files are chunked locally and cached after embedding
 - The app re-indexes when the folder or Voyage API key changes
-- KB cache is stored at `~/Library/Application Support/On The Spot/kb_cache.json`
+- KB cache is stored at `~/Library/Application Support/OpenGranola/kb_cache.json`
 
 ## Permissions And Local Data
 
 - Microphone permission is required to capture your side of the conversation
 - Screen capture permission is required to capture system audio from the other side of the call
-- Plain-text transcripts are saved to `~/Documents/On The Spot/`
-- Structured JSONL session logs are saved to `~/Library/Application Support/On The Spot/sessions/`
+- Plain-text transcripts are saved to `~/Documents/OpenGranola/`
+- Structured JSONL session logs are saved to `~/Library/Application Support/OpenGranola/sessions/`
 - `Hide from screen sharing` is enabled by default and can be changed in Settings
 
 ## Packaging
@@ -115,10 +115,10 @@ To build a DMG after building the app:
 ./scripts/make_dmg.sh
 ```
 
-The GitHub release workflow uses the same Swift build script and then packages `dist/OnTheSpot.dmg`.
+The GitHub release workflow uses the same Swift build script and then packages `dist/OpenGranola.dmg`.
 
 ## Repo Layout
 
-- `OnTheSpot/` — SwiftUI app source (Swift Package)
+- `OpenGranola/` — SwiftUI app source (Swift Package)
 - `scripts/build_swift_app.sh` — build, sign, and install
 - `scripts/make_dmg.sh` — package DMG for distribution

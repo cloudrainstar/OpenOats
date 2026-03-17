@@ -124,7 +124,7 @@ struct ContentView: View {
 
     private var topBar: some View {
         HStack(spacing: 8) {
-            Text("On The Spot")
+            Text("OpenGranola")
                 .font(.system(size: 13, weight: .semibold))
 
             Spacer()

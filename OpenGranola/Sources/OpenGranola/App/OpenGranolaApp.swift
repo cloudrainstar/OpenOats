@@ -2,7 +2,7 @@ import SwiftUI
 import AppKit
 
 @main
-struct OnTheSpotApp: App {
+struct OpenGranolaApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @State private var settings = AppSettings()
 

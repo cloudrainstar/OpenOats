@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleName</key>
-    <string>On The Spot</string>
+    <string>OpenGranola</string>
     <key>CFBundleDisplayName</key>
-    <string>On The Spot</string>
+    <string>OpenGranola</string>
     <key>CFBundleIdentifier</key>
-    <string>com.onthespot.app</string>
+    <string>com.opengranola.app</string>
     <key>CFBundleVersion</key>
     <string>2.0.0</string>
     <key>CFBundleShortVersionString</key>
     <string>2.0.0</string>
     <key>CFBundleExecutable</key>
-    <string>OnTheSpot</string>
+    <string>OpenGranola</string>
     <key>CFBundleIconFile</key>
     <string>AppIcon</string>
     <key>CFBundlePackageType</key>
@@ -21,9 +21,9 @@
     <key>LSMinimumSystemVersion</key>
     <string>26.0</string>
     <key>NSMicrophoneUsageDescription</key>
-    <string>On The Spot needs microphone access to transcribe your voice in real-time during conversations.</string>
+    <string>OpenGranola needs microphone access to transcribe your voice in real-time during conversations.</string>
     <key>NSScreenCaptureUsageDescription</key>
-    <string>On The Spot needs screen capture permission to capture system audio from other participants.</string>
+    <string>OpenGranola needs screen capture permission to capture system audio from other participants.</string>
     <key>LSApplicationCategoryType</key>
     <string>public.app-category.productivity</string>
 </dict>
