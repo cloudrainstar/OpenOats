@@ -387,6 +387,12 @@ private struct TranscriptionSettingsTab: View {
                         .font(.system(size: 11))
                         .foregroundStyle(.secondary)
 
+                    Toggle("Show word-by-word transcription preview", isOn: $settings.showPartialTranscription)
+                        .font(.system(size: 12))
+                    Text("Shows each word as it is recognised in real time. Disable for slower models (Qwen3 ASR, Whisper Large) to prevent the transcription loop from stalling mid-speech.")
+                        .font(.system(size: 11))
+                        .foregroundStyle(.secondary)
+
                     Toggle("Clean up transcript during recording", isOn: $settings.enableLiveTranscriptCleanup)
                         .font(.system(size: 12))
                     Text("Automatically removes filler words and fixes punctuation as you record. You can always clean up past transcripts manually from the Notes window.")

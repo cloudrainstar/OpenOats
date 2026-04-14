@@ -790,6 +790,17 @@ final class SettingsStore {
         }
     }
 
+    @ObservationIgnored nonisolated(unsafe) private var _showPartialTranscription: Bool
+    var showPartialTranscription: Bool {
+        get { access(keyPath: \.showPartialTranscription); return _showPartialTranscription }
+        set {
+            withMutation(keyPath: \.showPartialTranscription) {
+                _showPartialTranscription = newValue
+                defaults.set(newValue, forKey: "showPartialTranscription")
+            }
+        }
+    }
+
     @ObservationIgnored nonisolated(unsafe) private var _notesFolderPath: String
     var notesFolderPath: String {
         get { access(keyPath: \.notesFolderPath); return _notesFolderPath }
@@ -1013,6 +1024,11 @@ final class SettingsStore {
             self._showLiveTranscript = true
         } else {
             self._showLiveTranscript = defaults.bool(forKey: "showLiveTranscript")
+        }
+        if defaults.object(forKey: "showPartialTranscription") == nil {
+            self._showPartialTranscription = true
+        } else {
+            self._showPartialTranscription = defaults.bool(forKey: "showPartialTranscription")
         }
         let defaultNotesPath = storage.defaultNotesDirectory.path
         self._notesFolderPath = defaults.string(forKey: "notesFolderPath") ?? defaultNotesPath

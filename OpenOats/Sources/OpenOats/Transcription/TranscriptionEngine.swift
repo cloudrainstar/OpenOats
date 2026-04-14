@@ -897,7 +897,7 @@ final class TranscriptionEngine {
             vadManager: vadManager,
             speaker: speaker,
             flushInterval: model.flushIntervalSamples,
-            skipPartials: model.isCloud,
+            skipPartials: model.isCloud || !settings.showPartialTranscription,
             onPartial: onPartial,
             onFinal: onFinal
         )
