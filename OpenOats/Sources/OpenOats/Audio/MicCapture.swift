@@ -14,10 +14,17 @@ final class MicCapture: @unchecked Sendable {
     private let _error = SyncString()
     private let _streamContinuation = OSAllocatedUnfairLock<AsyncStream<AVAudioPCMBuffer>.Continuation?>(uncheckedState: nil)
     private let _muted = SyncBool()
+    /// Tracks the OS-level mute state of the active input device (e.g. muted via Teams/Zoom).
+    private let _osMuted = SyncBool()
+    private var muteListenerBlock: AudioObjectPropertyListenerBlock?
+    private var muteListenerDeviceID: AudioDeviceID?
 
-    var audioLevel: Float { _muted.value ? 0 : _audioLevel.value }
+    var audioLevel: Float { (_muted.value || _osMuted.value) ? 0 : _audioLevel.value }
     var hasCapturedFrames: Bool { _hasCapturedFrames.value }
     var captureError: String? { _error.value }
+
+    /// True when the input device is muted at the OS level (e.g. by Teams or the menu bar).
+    var isOSMuted: Bool { _osMuted.value }
 
     /// When muted, buffers are not forwarded to the stream and audio level reads as 0.
     var isMuted: Bool {
@@ -138,7 +145,12 @@ final class MicCapture: @unchecked Sendable {
 
             Log.mic.info("tapFormat: sr=\(tapFormat.sampleRate, privacy: .public) ch=\(tapFormat.channelCount, privacy: .public)")
 
+            // Register a CoreAudio listener to track the OS-level input mute state.
+            // This fires when Teams, Zoom, or the system mutes/unmutes the input device.
+            self.registerOSMuteListener(for: resolvedDeviceID)
+
             let muted = self._muted
+            let osMuted = self._osMuted
             var tapCallCount = 0
             inputNode.installTap(onBus: 0, bufferSize: 4096, format: tapFormat) { buffer, _ in
                 tapCallCount += 1
@@ -150,7 +162,7 @@ final class MicCapture: @unchecked Sendable {
                     Log.mic.debug("tap #\(tapCallCount, privacy: .public): frames=\(buffer.frameLength, privacy: .public) rms=\(rms, privacy: .public) level=\(level.value, privacy: .public)")
                 }
 
-                guard !muted.value else { return }
+                guard !muted.value && !osMuted.value else { return }
                 continuation.yield(buffer)
             }
             self.hasTapInstalled = true
@@ -185,6 +197,7 @@ final class MicCapture: @unchecked Sendable {
 
     func stop() {
         finishStream()
+        unregisterOSMuteListener()
         if hasTapInstalled {
             engine.inputNode.removeTap(onBus: 0)
             hasTapInstalled = false
@@ -193,6 +206,61 @@ final class MicCapture: @unchecked Sendable {
         engine.reset()
         _audioLevel.value = 0
         _hasCapturedFrames.value = false
+        _osMuted.value = false
+    }
+
+    // MARK: - OS Mute Listener
+
+    private func registerOSMuteListener(for deviceID: AudioDeviceID?) {
+        unregisterOSMuteListener()
+        guard let deviceID else { return }
+
+        var address = AudioObjectPropertyAddress(
+            mSelector: kAudioDevicePropertyMute,
+            mScope: kAudioDevicePropertyScopeInput,
+            mElement: kAudioObjectPropertyElementMain
+        )
+
+        // Check the property exists on this device before registering.
+        guard AudioObjectHasProperty(deviceID, &address) else { return }
+
+        // Read the initial mute state.
+        var muteVal: UInt32 = 0
+        var size = UInt32(MemoryLayout<UInt32>.size)
+        if AudioObjectGetPropertyData(deviceID, &address, 0, nil, &size, &muteVal) == noErr {
+            _osMuted.value = muteVal != 0
+            Log.mic.info("Initial OS mute state: \(muteVal != 0, privacy: .public)")
+        }
+
+        let osMuted = _osMuted
+        let block: AudioObjectPropertyListenerBlock = { _, _ in
+            var val: UInt32 = 0
+            var sz = UInt32(MemoryLayout<UInt32>.size)
+            var addr = AudioObjectPropertyAddress(
+                mSelector: kAudioDevicePropertyMute,
+                mScope: kAudioDevicePropertyScopeInput,
+                mElement: kAudioObjectPropertyElementMain
+            )
+            if AudioObjectGetPropertyData(deviceID, &addr, 0, nil, &sz, &val) == noErr {
+                osMuted.value = val != 0
+                Log.mic.info("OS mute changed: \(val != 0, privacy: .public)")
+            }
+        }
+        AudioObjectAddPropertyListenerBlock(deviceID, &address, nil, block)
+        muteListenerBlock = block
+        muteListenerDeviceID = deviceID
+    }
+
+    private func unregisterOSMuteListener() {
+        guard let deviceID = muteListenerDeviceID, let block = muteListenerBlock else { return }
+        var address = AudioObjectPropertyAddress(
+            mSelector: kAudioDevicePropertyMute,
+            mScope: kAudioDevicePropertyScopeInput,
+            mElement: kAudioObjectPropertyElementMain
+        )
+        AudioObjectRemovePropertyListenerBlock(deviceID, &address, nil, block)
+        muteListenerBlock = nil
+        muteListenerDeviceID = nil
     }
 
     private func makeFreshEngine() -> AVAudioEngine {
